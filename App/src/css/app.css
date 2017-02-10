@@ -1,0 +1,139 @@
+html {
+  height: 100%;
+}
+body{
+    width: 100%;
+    margin: 0;
+    padding:0;
+    height:100%;
+}
+#head{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
+}
+
+#head h1{
+    margin: 0;
+    text-align: center;
+    padding: 10px;
+    font-size: 18px;
+}
+
+#menu{
+    float: left;
+    width: 12%;
+    height: calc(100% - 18px);
+    background-color: #272930;
+    border-top: 1px solid rgba(255,255,255,0.4)
+}
+
+#menuNone{
+    float: left;
+    width: 1px;
+    background-color: black;
+    height: calc(100% - 18px);
+    border-top: 1px solid rgba(255,255,255,0.4)
+}
+#footer{
+    clear: both;
+    background-color: #5b5252;
+    width: 100%
+    margin:0;
+}
+
+#body{
+    float: left;
+    width:calc(88% - 30px);
+    min-height: calc(90% - 18px);
+    padding-left: 30px;
+}
+.draggableBox {
+    position: absolute;
+    width: 70px;
+    cursor: move;
+}
+
+#gal{
+    height: 110px;
+    width: 90%;
+    border: 1px solid rgba(120, 120, 120, 0.4)
+}
+
+#myPictures{
+    clear: both;
+    float: right;
+    width: 18%;
+    min-height: 500px;
+    max-height: 800px;
+    overflow: auto;
+    border-left: 2px solid rgba(200, 200,200,0.9);
+}
+
+#myPictures img{
+    display: block;
+    margin: 8px auto 8px auto;
+}
+#pannelConnexion{
+    width: 50%;
+    margin-left:30%;
+    margin-right: auto;
+    margin-top:10%;
+    background-color: rgba(200, 200,200,0.3);
+    padding: 15px;
+    clear: both;
+}
+
+#formConnexion{
+    padding: 15px;
+}
+form label{
+    display: block;
+    width: 70%;
+    margin:10px auto 10px auto;
+    text-decoration: underline;
+    font-weight: bold;
+}
+form input[type="text"],input[type="password"],input[type="email"]{
+    width: 70%;
+    height: 30px;
+    margin:10px auto 10px auto;
+    padding-left: 20px;
+    background-color: white;
+    display: block;
+}
+
+form input[type="submit"]{
+    margin:10px auto 10px auto;
+    display: block;
+    width: 20%;
+    font-size: 30px;
+}
+
+#right{
+    float: right;
+    margin-top : -10px;
+}
+
+@media screen and (max-width: 640px) {
+    #pannelConnexion{
+        width: calc(100% - 30px);
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #body{
+        float: left;
+        width:99%;
+        min-height: calc(90% - 18px);
+        padding:0px;
+
+    }
+    form input[type="submit"]{
+        margin:10px auto 10px auto;
+        display: block;
+        width: 50%;
+        font-size: 30px;
+    }
+}
