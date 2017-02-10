@@ -8,7 +8,7 @@
         <label>
             Votre mot de passe :
         </label>
-        <input type="password" name="password" placeholder="************">
+        <input type="password" name="pass" placeholder="************">
         <input type="submit" name="connexion" value="Se connecter">
         <span id="right"><a href="#" onclick="inscription()">S'inscrire</a> | <a href="#" onclick="forgot()">Mot de passe oublié</a></span>
     </form>
@@ -43,6 +43,12 @@
         <input type="submit" value="Se connecter">
         <span id="right"><a href="#" onclick="forgot()">Mot de passe oublié</a> | <a href="#" onclick="connexion()">Se connecter.</a></span>
     </form>
+    <div>
+    <?php if(isset($_GET['valide']) == true) { ?>
+        <h3 style="">Un email de confirmation vient de vous être envoyé.</h3>
+        <p>Pour confirmer votre inscription veuillez cliquer sur le lien présent dans le mail.</p>
+    <?php } ?>
+    </div>
 </div>
 <script>
 

@@ -11,32 +11,36 @@ class ConnexionController extends Controller
 {
     public function index()
     {
-        return view('view/connexion.php');
+        return $this->view('view/connexion.php');
     }
 
-    public function connexion()
+    public function connexion(Request $req)
     {
-        return view('view/connexion.php');
+        $user = new Users();
+        if ($use = $user->identValid($req)) {
+            $use[0]->token = $use[0]->encryptPass(time().rand(0,10000).$use[0]->pseudo.$use[0]->mail.time());
+            $use[0]->expire + (7 * 24 * 60 * 60);
+            $use[0]->update();
+            $_SESSION['pseudo'] = $use[0]->token;
+            header('location:/');
+            return;
+        }
+        session_unset();
+        session_destroy();
+        header('location:/connexion?error=connexion');
+        return;
     }
 
     public function inscription(Request $req)
     {
         $user = new Users();
-        $Checkuser = $user
-        ->where([
-                    ['pseudo', '=', $req->input('pseudo')],
-                ])
-        ->whereOr([
-                    ['mail', '=', $req->input('mail')]
-                ])->get();
-        if ($Checkuser != false) {
+        if ($user->validPseudo($req) && $user->validMail($req) && $user->validPassword($req)) {
+            $user = new Users();
+            $user->saveUser($req);
+            header('location:/connexion?valide=true');
+        } else {
             header('location:/connexion?non=non');
-            echo 'oui';
-            return;
         }
-        $user = new Users();
-        $user->saveUser($req);
-        header('location:/connexion?oui=oui');
     }
 }
 ?>

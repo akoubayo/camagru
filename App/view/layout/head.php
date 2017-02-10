@@ -7,7 +7,7 @@
 <body>
     <?php if (isset($_SESSION['pseudo'])) { ?>
     <div id="menu">
-        Menu
+        <h3>Bonjour <?php echo $user->pseudo ?></h3>
     </div>
     <?php } else { ?>
     <div id="menuNone"></div>
@@ -19,6 +19,9 @@
         <?php include_once($view); ?>
     </div>
     <?php include_once('foot.php'); ?>
+<script>
+var token = '<?php if (isset($user->token))echo $user->token; ?>';
+</script>
 <script type="text/javascript" src="/../../script/app.js"></script>
 <script type="text/javascript" src="/script/dragAndResize.js"></script>
 <script type="text/javascript" src="/script/captureWebcam.js"></script>

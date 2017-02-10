@@ -16,7 +16,6 @@ function hasClass(element, className) {
             if (elements[i].className === 'draggableBox') {
                 elements[i].style.top = document.querySelector('#gal').offsetTop + 10 + 'px';
                 elements[i].style.left = posLeft + 'px';
-                console.log(document.querySelector('#gal').style.height);
                 if(parseInt(elements[i].height) > parseInt(document.querySelector('#gal').style.height))
                     elements[i].style.height =parseInt(document.querySelector('#gal').style.height) - 10 + 'px';
                 posLeft += 120;
@@ -40,7 +39,6 @@ function hasClass(element, className) {
                 }, false);
                 elements[i].addEventListener('mouseenter', function(e) {
                     e.target.style.border = '3px dotted black';
-                    console.log(document.querySelector('#body').offsetLeft);
                 }, false);
                 elements[i].addEventListener('mouseleave', function(e) {
                     if(onUse == false) e.target.style.border = 'none';

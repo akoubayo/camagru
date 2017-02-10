@@ -29,6 +29,12 @@ body{
     border-top: 1px solid rgba(255,255,255,0.4)
 }
 
+#menu h3 {
+    color:white;
+    text-align:center;
+    text-transform: capitalize;
+}
+
 #menuNone{
     float: left;
     width: 1px;

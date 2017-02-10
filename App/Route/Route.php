@@ -65,12 +65,14 @@ class Route
             if ($this->request_uri == '/') {
                 $call = explode('@', $call_function);
                 $controller = new \App\Controller\PictureController();
-                $controller->$call[1]();
+                $func = $call[1];
+                $controller->$func();
             } else {
                 $call = explode('@', $call_function);
                 $call[0] = '\App\Controller\\'.$call[0];
                 $controller = new $call[0]();
-                $controller->$call[1]();
+                $call = $call[1];
+                $controller->$call();
             }
         }
     }
@@ -81,7 +83,8 @@ class Route
             $call = explode('@', $call_function);
             $call[0] = '\App\Controller\\'.$call[0];
             $controller = new $call[0]();
-            $controller->$call[1](new Request);
+            $call = $call[1];
+            $controller->$call(new Request);
         }
     }
 }

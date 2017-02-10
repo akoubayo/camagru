@@ -45,13 +45,13 @@
         // abonnement du bouton "Destinaitaire événement" à l'événement
         var eventDestination = document.getElementById("video");
         eventDestination.addEventListener("monEvenement", function(event) {
-          console.log("Reception de l'evenement");
-          console.log(event.detail.message);
+          // console.log("Reception de l'evenement");
+          // console.log(event.detail.message);
         });
         document.getElementById("video").dispatchEvent(monEvenement);
     },
     function(err) {
-      console.log("An error occured! " + err);
+      //console.log("An error occured! " + err);
     }
     );
 
@@ -105,10 +105,10 @@
                 var myArr = JSON.parse(this.responseText);
                 addImg(myArr.src);
             } else {
-            alert('An error occurred!');
+
             }
         };
-        xhr.send("donnee=" + data + "&name=picture");
+        xhr.send("donnee=" + data + "&token=" + token);
     }
 
     function addImg(src) {
@@ -120,9 +120,6 @@
         newLink.setAttribute('width', '200px');
 
         document.getElementById('myPictures').appendChild(newLink);
-        console.log('toto');
-
-
     }
 
     startbutton.addEventListener('click', function(ev){

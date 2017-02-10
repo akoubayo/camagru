@@ -11,6 +11,8 @@ class Model
 {
     private $db;
     private $req;
+    private $array = array();
+    private $debug = false;
 
     public function __construct()
     {
@@ -60,11 +62,30 @@ class Model
         $req->execute($array);
     }
 
+    public function update()
+    {
+        $this->req = 'UPDATE ' . $this->table . ' SET ';
+        $idTable = 'id_' . $this->table;
+        $this->array = array();
+        foreach ($this->champs as $value) {
+            if(isset($this->$value) && !empty($this->$value)){
+                $this->req .= $value . ' = :' . $value . ', ';
+                $this->array[$value] = $this->$value;
+            }
+        }
+        $this->req = substr($this->req, 0, -2) . ' WHERE id_' . $this->table . ' = ' . $this->$idTable;
+        $req = $this->db->prepare($this->req);
+        $req->execute($this->array);
+        $this->req = '';
+        $this->array = array();
+    }
+
     public function where($data)
     {
 
         if ($this->req == '') {
             $this->req = "SELECT * FROM ".$this->table." WHERE ";
+            $this->array = array();
         } else {
             $this->req .= " AND ";
         }
@@ -99,7 +120,7 @@ class Model
     {
         $req = $this->db->prepare($this->req);
         $req->execute($this->array);
-        return $this->returnObject($req, __CLASS__);
+        return $this->returnObject($req, get_class($this));
     }
 
     protected function returnObject($req, $class)
@@ -113,6 +134,15 @@ class Model
             }
             $i++;
         }
+        if ($this->debug == true) {
+            if ($ret == false) {
+                echo "<br/>Aucune donnée trouvée</br>";
+            } else {
+                var_dump($ret);
+            }
+        }
+        $this->req = '';
+        $this->array = array();
         return $ret;
     }
 
@@ -120,6 +150,7 @@ class Model
     {
         var_dump($this->req);echo '<br/>';
         var_dump($this->array);
+        $this->debug = true;
         return $this;
     }
 }

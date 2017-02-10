@@ -21,6 +21,15 @@ class Request
         return $value;
     }
 
+    public static function control($value)
+    {
+        $value =  stripslashes($value);
+        $value =  addslashes($value);
+        $value =  strip_tags($value);
+        $value =  htmlspecialchars($value);
+        return $value;
+    }
+
     public function input($name = '')
     {
         if (!empty($name)) {
