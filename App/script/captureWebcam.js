@@ -103,7 +103,7 @@
         xhr.onload = function () {
         if (xhr.status === 200) {
                 var myArr = JSON.parse(this.responseText);
-                addImg(myArr.src);
+                addImg(myArr.src, myArr.id);
             } else {
 
             }
@@ -111,15 +111,12 @@
         xhr.send("donnee=" + data + "&token=" + token);
     }
 
-    function addImg(src) {
+    function addImg(src, id) {
         var newLink = document.createElement('img');
-
-        newLink.id = 'sdz_link';
+        var myPicture = document.getElementById('myPictures');
+        newLink.id = id;
         newLink.src = src;
-        newLink.title = 'Découvrez le Site du Zéro !';
-        newLink.setAttribute('width', '200px');
-
-        document.getElementById('myPictures').appendChild(newLink);
+        myPicture.insertBefore(newLink, myPicture.childNodes[2]);
     }
 
     startbutton.addEventListener('click', function(ev){

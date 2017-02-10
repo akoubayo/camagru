@@ -51,7 +51,7 @@ class Model
         $val = 'VALUES(';
         $array = array();
         foreach ($this->champs as $value) {
-            if(isset($this->$value) && !empty($this->$value)){
+            if (isset($this->$value) && !empty($this->$value)) {
                 $req .= $value . ', ';
                 $val .= ':' . $value . ', ';
                 $array[$value] = $this->$value;
@@ -60,6 +60,8 @@ class Model
         $req = substr($req, 0, -2) . ') ' . substr($val, 0, -2) . ')';
         $req = $this->db->prepare($req);
         $req->execute($array);
+        $id = 'id_'.$this->table;
+        $this->$id = $this->db->lastInsertId();
     }
 
     public function update()
@@ -68,7 +70,7 @@ class Model
         $idTable = 'id_' . $this->table;
         $this->array = array();
         foreach ($this->champs as $value) {
-            if(isset($this->$value) && !empty($this->$value)){
+            if (isset($this->$value) && !empty($this->$value)) {
                 $this->req .= $value . ' = :' . $value . ', ';
                 $this->array[$value] = $this->$value;
             }
@@ -101,7 +103,7 @@ class Model
 
     public function whereOr($data)
     {
-        if($this->req == '') {
+        if ($this->req == '') {
             $this->req = "SELECT * FROM ".$this->table." WHERE ";
         } else {
             $this->req .= " OR ";
@@ -130,7 +132,9 @@ class Model
         while ($don = $req->fetch(PDO::FETCH_ASSOC)) {
             $ret[$i] = new $class();
             foreach ($don as $key => $value) {
-                $ret[$i]->$key = $value;
+                if (in_array($key, $ret[$i]->champs) || substr($key, 0, 2) == 'id') {
+                    $ret[$i]->$key = $value;
+                }
             }
             $i++;
         }
@@ -146,9 +150,22 @@ class Model
         return $ret;
     }
 
+    public function hasMany($related, $foreignKey, $option = false)
+    {
+        $foreignTable = explode('\\', $related);
+        $foreignTable = strtolower($foreignTable[(count($foreignTable) - 1)]);
+        $this->req = 'SELECT * FROM ' . $foreignTable . ', ' .$this->table. ' WHERE ' . $foreignKey . ' = id_' . $this->table . '';
+        if ($option == false) {
+            $req = $this->db->prepare($this->req);
+            $img = $req->execute();
+            return $this->returnObject($req, $related);
+        }
+    }
+
     public function debug()
     {
-        var_dump($this->req);echo '<br/>';
+        var_dump($this->req);
+        echo '<br/>';
         var_dump($this->array);
         $this->debug = true;
         return $this;

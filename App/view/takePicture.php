@@ -1,6 +1,11 @@
 
 <div id="myPictures">
 <h1 style="text-align: center">Mes photos</h1>
+<?php
+foreach ($img as $value) {
+    echo '<img src="src/imgsave/' . $value->src .'.png"/>';
+}
+?>
 </div>
     <div style="float: left;width: 80%">
               <video id="video" width="320" height="240" autoplay loop></video>

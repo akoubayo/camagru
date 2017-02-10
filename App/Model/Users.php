@@ -10,6 +10,11 @@ class Users extends Model
     protected $table = 'user_cam';
     protected $champs = array('pseudo', 'password', 'mail', 'valide', 'token', 'expire');
 
+    public function pictures($option = false)
+    {
+        return $this->hasMany('App\Model\Pictures', 'user_cam_id', $option);
+    }
+
     public function saveUser(Request $req)
     {
         $this->pseudo = $req->input('pseudo');
