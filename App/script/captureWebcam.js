@@ -86,18 +86,55 @@
         return validAttr;
     }
     name = 1;
-    function takepicture() {
-        var test = document.getElementById('test');
-        var toto = document.getElementsByAttribute(document.querySelectorAll('.draggableBox'),'data-x');
+    // function takepicture() {
+    //     var imgSup = document.getElementsByAttribute(document.querySelectorAll('.draggableBox'),'data-x');
+    //     if(imgSup.length == 0) {
+    //         return;
+    //     }
+    //     canvas.width = width;
+    //     canvas.height = height;
+    //     var context = canvas.getContext('2d');
+    //     context.drawImage(video, 0, 0, width, height);
+    //     for(var i = 0; i < imgSup.length; i++) {
+    //         context.drawImage(imgSup[i], imgSup[i].getAttribute('data-x'), imgSup[i].getAttribute('data-y'), imgSup[i].width, imgSup[i].height);
+    //     }
+    //     var data = canvas.toDataURL('image/png');
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open('POST', '/takePicture', true);
+    //     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+    //     xhr.onload = function () {
+    //     if (xhr.status === 200) {
+    //             var myArr = JSON.parse(this.responseText);
+    //             addImg(myArr.src, myArr.id);
+    //         } else {
+
+    //         }
+    //     };
+    //     xhr.send("donnee=" + data + "&token=" + token);
+    // }
+
+        function takepicture() {
+        var imgSup = document.getElementsByAttribute(document.querySelectorAll('.draggableBox'),'data-x');
+        var context, data, xhr, donnee;
+        if(imgSup.length == 0) {
+            return;
+        }
         canvas.width = width;
         canvas.height = height;
-        var context = canvas.getContext('2d');
+        context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, width, height);
-        for(var i = 0; i < toto.length; i++) {
-            context.drawImage(toto[i], toto[i].getAttribute('data-x'), toto[i].getAttribute('data-y'), toto[i].width, toto[i].height);
+        donnee = "donnee=" + canvas.toDataURL('image/png') + "&width=" + width + "$height=" + height;
+        for(var i = 0; i < imgSup.length; i++) {
+            var src = imgSup[i].getAttribute('src');
+            var widthSup =  imgSup[i].width;
+            var heightSup = imgSup[i].height
+            var dataXSup = imgSup[i].getAttribute('data-x');
+            var dataYSup = imgSup[i].getAttribute('data-y');
+            donnee += "&src" + i + "=" + src + "&width" + i + "=" + widthSup + "&height" + i + "=" + heightSup + "&dataX" + i + "=" + dataXSup + "&dataY" + i + "=" + dataYSup;
         }
-        var data = canvas.toDataURL('image/png');
-        var xhr = new XMLHttpRequest();
+        donnee += "&token=" + token;
+        console.log(donnee);
+        xhr = new XMLHttpRequest();
         xhr.open('POST', '/takePicture', true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         xhr.onload = function () {
@@ -108,7 +145,7 @@
 
             }
         };
-        xhr.send("donnee=" + data + "&token=" + token);
+        xhr.send(donnee);
     }
 
     function addImg(src, id) {

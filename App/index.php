@@ -24,4 +24,6 @@ $app->post('/takePicture', "PictureController@takePicture");
 $app->get('/connexion', "ConnexionController@index");
 $app->post('/connexion', "ConnexionController@connexion");
 $app->post('/connexion/inscription', "ConnexionController@inscription");
+
+$app->get('/bit', "bit@bit");
 ?>

@@ -21,10 +21,10 @@ class PictureController extends Controller
                 session_destroy();
                 header('location:/connexion?error=connexion');
             }
-            $img = $user[0]->pictures();
+            $img = $user[0]->pictures(true)->order([["time", "DESC"]])->get();
             $this->view('view/takePicture.php', ['user' => $user[0], 'img' => $img]);
         } else {
-            $view = 'view/connexion.php';
+            $this->view('view/connexion.php');
         }
     }
 

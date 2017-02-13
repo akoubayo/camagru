@@ -2,8 +2,10 @@
 <div id="myPictures">
 <h1 style="text-align: center">Mes photos</h1>
 <?php
-foreach ($img as $value) {
-    echo '<img src="src/imgsave/' . $value->src .'.png"/>';
+if($img) {
+    foreach ($img as $value) {
+        echo '<img src="src/imgsave/' . $value->src .'.png"/>';
+    }
 }
 ?>
 </div>

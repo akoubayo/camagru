@@ -127,6 +127,9 @@ class Model
 
     protected function returnObject($req, $class)
     {
+        if (isset($this->foreignClass)) {
+            $class = $this->foreignClass;
+        }
         $ret = false;
         $i = 0;
         while ($don = $req->fetch(PDO::FETCH_ASSOC)) {
@@ -160,6 +163,19 @@ class Model
             $img = $req->execute();
             return $this->returnObject($req, $related);
         }
+        $this->foreignClass = $related;
+        $this->foreignKey = $foreignKey;
+        return $this;
+    }
+
+    public function order($data)
+    {
+        $this->req .= ' ORDER BY ';
+        foreach ($data as $value) {
+                $this->req .= $value[0] . " " . $value[1] . " AND ";
+        }
+        $this->req = substr($this->req, 0, -4);
+        return $this;
     }
 
     public function debug()
