@@ -1,4 +1,17 @@
 <?php
+
+/**
+ * ConnexionController
+ *
+ * PHP Version 7.0
+ *
+ * @category Controller
+ * @package  Camagru
+ * @author   Damien Altman <damien@tilkee.com>
+ * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link     https://github.com/akoubayo/camagru
+ */
+
 namespace App\Controller;
 
 use App\vendor\Request\Request;
