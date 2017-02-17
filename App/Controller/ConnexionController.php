@@ -21,12 +21,10 @@ class ConnexionController extends Controller
             $use[0]->token = $use[0]->encryptPass(time().rand(0,10000).$use[0]->pseudo.$use[0]->mail.time());
             $use[0]->expire + (7 * 24 * 60 * 60);
             $use[0]->update();
-            $_SESSION['pseudo'] = $use[0]->token;
+            $_SESSION['token'] = $use[0]->token;
             header('location:/');
             return;
         }
-        session_unset();
-        session_destroy();
         header('location:/connexion?error=connexion');
         return;
     }

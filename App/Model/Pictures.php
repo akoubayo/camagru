@@ -10,9 +10,18 @@ class Pictures extends Model
 {
 
     protected $table = 'pictures';
-    protected $champs = array('src', 'vote', 'del', 'time', 'user_cam_id');
+    protected $champs = array('src', 'vote', 'del', 'time', 'users_id');
     protected $data;
 
+    public function users($option = false)
+    {
+        return $this->belongsTo('App\Model\Users', 'id_users', $option);
+    }
+
+    public function commentaires($option = false)
+    {
+        return $this->hasMany('App\Model\Commentaires', 'pictures_id', $option);
+    }
 
     public function makePicture(Request $req)
     {
@@ -26,9 +35,10 @@ class Pictures extends Model
         $this->savePicture();
     }
 
+
     public function createSup(Request $req)
     {
-        $destination = imagecreatefrompng(str_replace(' ', '+',$_POST['donnee']));
+        $destination = imagecreatefrompng(str_replace(' ', '+', $_POST['donnee']));
         $i = 0;
         while ($req->input("src$i")) {
             $largeur_source = $req->input('width' . $i);
@@ -50,6 +60,7 @@ class Pictures extends Model
     {
         $TailleImageChoisie = getimagesize($src);
         $newImg = imagecreatetruecolor($lar, $hau);
+
         imagealphablending($newImg, false);
         imagesavealpha($newImg, true);
         imagecopyresampled($newImg, $imgTmp, 0, 0, 0, 0, $lar, $hau, $TailleImageChoisie[0], $TailleImageChoisie[1]);
@@ -61,5 +72,23 @@ class Pictures extends Model
         $this->time = time();
         $save = $this->save();
         return $save;
+    }
+
+    public function makeGif($imgTab = array())
+    {
+        $text = "Hello World";
+        foreach ($imgTab as $value) {
+            $image = imagecreatefrompng('src/imgsave/' . $value . '.png');
+
+            ob_start();
+            imagegif($image);
+            $frames[]=ob_get_contents();
+            $framed[]=20;
+
+            ob_end_clean();
+        }
+
+        $gif = new GIFEncoder($frames, $framed, 0, 2, 0, 0, 0, 'bin');
+        file_put_contents('src/imgsave/gif.gif', $gif->GetAnimation());
     }
 }

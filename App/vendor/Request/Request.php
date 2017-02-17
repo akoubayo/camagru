@@ -36,6 +36,9 @@ class Request
             if (isset($_POST[$name]) && !empty($_POST[$name])) {
                 return $this->controlInput($_POST[$name]);
             }
+            if (isset($_GET[$name]) && !empty($_GET[$name])) {
+                return $this->controlInput($_GET[$name]);
+            }
         } else {
             $ret = array();
             foreach ($_POST as $key => $value) {
@@ -44,6 +47,6 @@ class Request
             }
             return $ret;
         }
-        return false;
+        return '';
     }
 }

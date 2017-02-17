@@ -24,14 +24,23 @@ class Model
                 die('Erreur : '.$e->getMessage());
         }
     }
-
-    public static function find($id)
+    public function all($order = "desc", $limit = "", $offset = "")
     {
-        $class = static::maClass();
-        $new = new $class();
-        $req = $new->db->prepare("SELECT * FROM ".$new->table." WHERE id_". $new->table . " = ? ");
-        $req->execute(array($id));
-        $ret = $new->returnObject($req, $class);
+        if (!empty($limit) && (int)$limit >= 0) {
+            $limit = " LIMIT ".(int)$limit;
+        }
+        if (!empty($offset) && (int)$offset >= 0) {
+            $offset = " OFFSET " . (int)$offset;
+        }
+        $this->req = 'SELECT * FROM ' . $this->table . " ORDER BY id_" . $this->table . ' ' . $order . $limit . $offset ;
+        return $req = $this->get();
+    }
+
+    public function find($id)
+    {
+        $this->req = "SELECT * FROM ".$this->table." WHERE id_". $this->table . " = ? ";
+        $this->array[]=$id;
+        $ret = $this->get();
         if (count($ret) == 1) {
             $ret = $ret[0];
         }
@@ -62,6 +71,7 @@ class Model
         $req->execute($array);
         $id = 'id_'.$this->table;
         $this->$id = $this->db->lastInsertId();
+        return $this;
     }
 
     public function update()
@@ -129,13 +139,17 @@ class Model
     {
         if (isset($this->foreignClass)) {
             $class = $this->foreignClass;
+            $foreign_ = "foreign_";
         }
-        $ret = false;
+        $ret = array();
         $i = 0;
         while ($don = $req->fetch(PDO::FETCH_ASSOC)) {
             $ret[$i] = new $class();
             foreach ($don as $key => $value) {
-                if (in_array($key, $ret[$i]->champs) || substr($key, 0, 2) == 'id') {
+                if (in_array($key, $ret[$i]->champs) || substr($key, 0, 2) == 'id' && !isset($this->foreignClass)) {
+                    $ret[$i]->$key = $value;
+                } else if (in_array(substr($key, 8), $ret[$i]->champs) || substr($key, 0, 2) == 'id') {
+                    $key = substr($key, 8);
                     $ret[$i]->$key = $value;
                 }
             }
@@ -153,18 +167,52 @@ class Model
         return $ret;
     }
 
+    public function foreignKey($related, $foreignTable)
+    {
+        $foreign = new $related();
+        $col = "";
+        foreach ($foreign->champs as $value) {
+            $col .= $foreignTable.'.'.$value . ' AS foreign_' . $value . ', ';
+        }
+        $this->foreing_col = substr($col, 0, -2);
+    }
+
     public function hasMany($related, $foreignKey, $option = false)
     {
         $foreignTable = explode('\\', $related);
         $foreignTable = strtolower($foreignTable[(count($foreignTable) - 1)]);
-        $this->req = 'SELECT * FROM ' . $foreignTable . ', ' .$this->table. ' WHERE ' . $foreignKey . ' = id_' . $this->table . '';
+        $id = 'id_' . $this->table;
+        $this->foreignClass = $related;
+        $this->foreignKey = $foreignKey;
+        $this->foreignKey($related, $foreignTable);
+        $this->req = 'SELECT  ' . $this->foreing_col .' FROM ' . $foreignTable . ', ' .$this->table. ' WHERE ' . $foreignKey . ' = id_' . $this->table . ' AND id_'. $this->table . ' = ' .$this->$id;
         if ($option == false) {
             $req = $this->db->prepare($this->req);
             $img = $req->execute();
             return $this->returnObject($req, $related);
         }
+        return $this;
+    }
+
+    public function belongsTo($related, $foreignKey, $option = false)
+    {
+        $foreignTable = explode('\\', $related);
+        $foreignTable = strtolower($foreignTable[(count($foreignTable) - 1)]);
+        $id = $foreignTable . '_id';
         $this->foreignClass = $related;
         $this->foreignKey = $foreignKey;
+        $this->foreignKey($related, $foreignTable);
+        $this->req = 'SELECT '. $this->foreing_col . ' FROM ' . $foreignTable . ' WHERE ' . $foreignKey . ' = ' . $this->$id;
+        if ($option == false) {
+            $req = $this->db->prepare($this->req);
+            $img = $req->execute();
+            $ret = $this->returnObject($req, $related);
+            if (count($ret) == 1) {
+                $ret = $ret[0];
+            }
+            return $ret;
+        }
+
         return $this;
     }
 
@@ -176,6 +224,27 @@ class Model
         }
         $this->req = substr($this->req, 0, -4);
         return $this;
+    }
+
+    public function limit($limit)
+    {
+        $this->req .= ' LIMIT ' . $limit;
+        return $this;
+    }
+
+    public function offset($offset)
+    {
+        $this->req .= ' OFFSET ' . $offset;
+        return $this;
+    }
+    public function count()
+    {
+        $this->req = 'SELECT COUNT(*) as count FROM ' . $this->table;
+        $req = $this->db->prepare($this->req);
+        $req->execute($this->array);
+        $ret = $req->fetch(PDO::FETCH_ASSOC);
+        return $ret['count'];
+        //return $this->debug()->get();
     }
 
     public function debug()

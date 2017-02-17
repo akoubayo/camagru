@@ -12,7 +12,7 @@ if($img) {
     <div style="float: left;width: 80%">
               <video id="video" width="320" height="240" autoplay loop></video>
               <canvas id="canvas" width="320" height="240" style="display: none"></canvas>
-              <button id="startbutton">Prendre une photo</button>
+              <button id="startbutton" >Prendre une photo</button>
 
 
     <div id="gal" style="height: 110px;">

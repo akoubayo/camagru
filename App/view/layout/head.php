@@ -5,9 +5,14 @@
     <link rel="stylesheet" type="text/css" href="/../../src/css/app.css">
 </head>
 <body>
-    <?php if (isset($_SESSION['pseudo'])) { ?>
+    <?php if (isset($_SESSION['token'])) { ?>
     <div id="menu">
         <h3>Bonjour <?php echo $user->pseudo ?></h3>
+        <ul>
+            <li><a href="/takePicture">Prendre une photo</a></li>
+            <li><a href="/galerie">Galerie des images</a></li>
+        </ul>
+
     </div>
     <?php } else { ?>
     <div id="menuNone"></div>
@@ -20,7 +25,7 @@
     </div>
     <?php include_once('foot.php'); ?>
 <script>
-var token = '<?php if (isset($user->token))echo $user->token; ?>';
+var token = '';
 </script>
 <script type="text/javascript" src="/../../script/app.js"></script>
 <script type="text/javascript" src="/script/dragAndResize.js"></script>

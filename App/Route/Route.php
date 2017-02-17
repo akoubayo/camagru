@@ -2,6 +2,7 @@
 namespace App\Route;
 
 use App\vendor\Request\Request;
+use App\Model\Users;
 
 /**
 * var request_uri
@@ -12,6 +13,7 @@ class Route
 {
     private $_methode;
     private $_uri;
+    private $_param = array();
 
     public function __construct()
     {
@@ -21,23 +23,46 @@ class Route
         }
     }
 
+    public function auth($next, $redirect, $function_call)
+    {
+        if (isset($_SESSION['token']) || isset($this->http_beaber)) {
+            $token = (isset($_SESSION['token'])) ? $_SESSION['token'] : $this->http_beaber;
+            $user = new Users();
+            $u = $user->where([["token", "=", Request::control($token)]])->get();
+            if (is_array($u) && count($u) == 1 && is_object($u[0])) {
+                return $next($this);
+            }
+        }
+        $this->request_uri = $redirect;
+        $this->get($redirect, $function_call);
+    }
+
+    private function getParam($uri)
+    {
+        $explode = explode('/', $uri);
+        $explode1 = explode('/', $this->request_uri);
+        foreach ($explode as $key => $value) {
+            if (substr($value, 0, 1) == '{' && isset($explode1[$key])) {
+                $this->_param[] = $explode1[$key];
+            }
+        }
+    }
+
     private function pushGet($request, $tabUri)
     {
-        var_dump($tabUri);
         $explode = explode('?', $request);
         $explode = explode('/', $explode[0]);
-        //var_dump($explode);
         foreach ($explode as $key => $value) {
             if ($key > 1) {
-                echo $value;
                 $_GET[$tabUri[$key - 2]] = $value;
+                echo 'tot';
+                $this->_param[] = $value;
             }
         }
     }
 
     public function checkRoute($uri)
     {
-
         $pos = strpos($uri, '{');
         (!$pos) ? $pos = -1 : $pos--;
         if ($pos == -1) {
@@ -66,15 +91,17 @@ class Route
                 $call = explode('@', $call_function);
                 $controller = new \App\Controller\PictureController();
                 $func = $call[1];
-                $controller->$func();
+                call_user_func_array(array($controller, $func), $this->_param);
             } else {
                 $call = explode('@', $call_function);
                 $call[0] = '\App\Controller\\'.$call[0];
                 $controller = new $call[0]();
                 $call = $call[1];
-                $controller->$call();
+                $this->getParam($uri);
+                call_user_func_array(array($controller, $call), $this->_param);
             }
         }
+        return;
     }
 
     public function post($uri, $call_function)

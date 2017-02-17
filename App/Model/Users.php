@@ -7,12 +7,12 @@ use App\vendor\Request\Request;
 */
 class Users extends Model
 {
-    protected $table = 'user_cam';
+    protected $table = 'users';
     protected $champs = array('pseudo', 'password', 'mail', 'valide', 'token', 'expire');
 
     public function pictures($option = false)
     {
-        return $this->hasMany('App\Model\Pictures', 'user_cam_id', $option);
+        return $this->hasMany('App\Model\Pictures', 'users_id', $option);
     }
 
     public function saveUser(Request $req)
@@ -50,7 +50,8 @@ class Users extends Model
     public function identValid(Request $req)
     {
         $user = $this->where([['pseudo', "=", $req->input('pseudo')],['password', '=', $this->encryptPass($req->input('pass'))]])
-            ->whereOr([['mail', '=', $req->input('pseudo')], ['password', '=', $this->encryptPass($req->input('pass'))]])
+            ->whereOr([['mail', '=', $req->input('pseudo')]])
+            ->where([['password', '=', $this->encryptPass($req->input('pass'))]])
             ->get();
         return $user;
     }
