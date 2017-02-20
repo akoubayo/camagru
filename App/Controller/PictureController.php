@@ -31,7 +31,11 @@ class PictureController extends Controller
 
     public function index()
     {
-        $img = $this->me->pictures(true)->order([["time", "DESC"]])->get();
+        $img = $this->me
+            ->pictures(true)
+            ->where([['del', '=', 0]])
+            ->order([["time", "DESC"]])
+            ->get();
         $this->view('view/takePicture.php', ['user' => $this->me, 'img' => $img]);
     }
 
@@ -41,7 +45,7 @@ class PictureController extends Controller
             $pict = new Pictures();
             $pict->users_id = (int)$this->me->id_users;
             $pict->makePicture($req);
-            echo json_encode(array('src'=>'src/imgsave/'.$pict->src.'.png', 'id' => $pict->id_pictures));
+            echo json_encode(array('src'=>'src/imgsave/'.$pict->src.'.'.$pict->type, 'id' => $pict->id_pictures));
         } else {
             http_response_code(400);
             echo json_encode(["error" => "Donnée incorrect"]);
@@ -62,9 +66,15 @@ class PictureController extends Controller
         $req = new Request;
         $pict = array('limit' => (int)$req->input('limit'), 'offset' => (int)$req->input('offset'));
         $picturesQuery = new Pictures();
-        $pictures = $picturesQuery->all("desc", $req->input('limit'), $req->input('offset'));
+        $pictures = $picturesQuery->where([['del', '=', 0]])
+            ->order([['id_pictures', 'DESC']])
+            ->limit($req->input('limit'))
+            ->offset((int)$req->input('offset'))
+            ->get();
         $pict['pictures'] = $pictures;
-        $pict['count'] = $picturesQuery->count();
+        $pict['count'] = $picturesQuery->count(true)
+            ->where([['del', '=', '0']])
+            ->get();
         $pict = (object)$pict;
         echo json_encode($pict);
     }
@@ -78,10 +88,22 @@ class PictureController extends Controller
             $user = $picture->users();
         }
         if (count($user) == 1) {
-            $com = $picture->commentaires();
+            $com = $picture->commentaires(true)->order([["commentaires.time", "DESC"]])->get();
             $this->view('view/picture.php', ['user' => $this->me, 'usersPicture' => $user, 'picture' => $picture, 'commentaires' => $com]);
         } else {
             $this->galerie();
+        }
+    }
+
+    public function delete($id)
+    {
+        $picture = $this->me->pictures(true)->where([['id_pictures', '=', $id]])->get();
+        if(count($picture) == 1) {
+            $picture[0]->del = true;
+            $picture[0]->update();
+            echo json_encode($picture[0]);
+        } else {
+            echo json_encode(array('error' => 'Une erreur s\'est produite !'));
         }
     }
 }

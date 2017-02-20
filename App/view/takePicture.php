@@ -4,13 +4,14 @@
 <?php
 if($img) {
     foreach ($img as $value) {
-        echo '<img src="src/imgsave/' . $value->src .'.png"/>';
+        echo '<img class="trash" id="' . $value->id_pictures . '" src="src/img/poubelle.png" onclick="trash(id)"/>';
+        echo '<img class="myPicture" src="src/imgsave/' . $value->src .'.png"/>';
     }
 }
 ?>
 </div>
     <div style="float: left;width: 80%">
-              <video id="video" width="320" height="240" autoplay loop></video>
+              <video id="video" width="320" height="240" ></video>
               <canvas id="canvas" width="320" height="240" style="display: none"></canvas>
               <button id="startbutton" >Prendre une photo</button>
 

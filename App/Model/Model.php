@@ -17,7 +17,8 @@ class Model
     public function __construct()
     {
         try {
-            $this->db = new PDO('mysql:host=localhost:8889;dbname=camagru;charset=utf8', 'root', 'root');
+            require(__DIR__.'/../config/setup.php');
+            $this->db = new PDO($DB_DSN.';dbname=camagru;charset=utf8', $DB_USER, $DB_PASSWORD);
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             $this->db->exec("SET CHARACTER SET utf8");
         } catch (Exception $e) {
@@ -36,6 +37,12 @@ class Model
         return $req = $this->get();
     }
 
+    public function select()
+    {
+        $this->req = 'SELECT * FROM ' . $this->table;
+        return $this;
+    }
+
     public function find($id)
     {
         $this->req = "SELECT * FROM ".$this->table." WHERE id_". $this->table . " = ? ";
@@ -44,6 +51,8 @@ class Model
         if (count($ret) == 1) {
             $ret = $ret[0];
         }
+        $this->req = '';
+        $this->array = array();
         return $ret;
     }
 
@@ -94,18 +103,17 @@ class Model
 
     public function where($data)
     {
-
         if ($this->req == '') {
             $this->req = "SELECT * FROM ".$this->table." WHERE ";
             $this->array = array();
+        } elseif (strpos($this->req, 'WHERE') === false) {
+            $this->req .= " WHERE ";
         } else {
             $this->req .= " AND ";
         }
         foreach ($data as $value) {
-            if (in_array($value[0], $this->champs)) {
-                $this->req .= $value[0] . " " . $value[1] . " :" .$value[0] . " AND ";
-                $this->array[$value[0]] = $value[2];
-            }
+            $this->req .= $value[0] . " " . $value[1] . " :" .$value[0] . " AND ";
+            $this->array[$value[0]] = $value[2];
         }
         $this->req = substr($this->req, 0, -4);
         return $this;
@@ -115,14 +123,14 @@ class Model
     {
         if ($this->req == '') {
             $this->req = "SELECT * FROM ".$this->table." WHERE ";
+        } elseif (strpos($this->req, 'WHERE') === false) {
+            $this->req .= " WHERE ";
         } else {
             $this->req .= " OR ";
         }
         foreach ($data as $value) {
-            if (in_array($value[0], $this->champs)) {
-                $this->req .= $value[0] . " " . $value[1] . " :" .$value[0] . " OR ";
-                $this->array[$value[0]] = $value[2];
-            }
+            $this->req .= $value[0] . " " . $value[1] . " :" .$value[0] . " OR ";
+            $this->array[$value[0]] = $value[2];
         }
         $this->req = substr($this->req, 0, -3);
         return $this;
@@ -130,8 +138,13 @@ class Model
 
     public function get()
     {
+        if (strpos($this->req, 'COUNT') !== false) {
+            return $this->count();
+        }
         $req = $this->db->prepare($this->req);
         $req->execute($this->array);
+        $this->req = '';
+        $this->array = array();
         return $this->returnObject($req, get_class($this));
     }
 
@@ -140,6 +153,9 @@ class Model
         if (isset($this->foreignClass)) {
             $class = $this->foreignClass;
             $foreign_ = "foreign_";
+            unset($this->foreignClass);
+            unset($this->foreing_col);
+            unset($this->foreignKey);
         }
         $ret = array();
         $i = 0;
@@ -151,6 +167,7 @@ class Model
                 } else if (in_array(substr($key, 8), $ret[$i]->champs) || substr($key, 0, 2) == 'id') {
                     $key = substr($key, 8);
                     $ret[$i]->$key = $value;
+                    unset($this->key);
                 }
             }
             $i++;
@@ -237,14 +254,20 @@ class Model
         $this->req .= ' OFFSET ' . $offset;
         return $this;
     }
-    public function count()
+    public function count($option = false)
     {
-        $this->req = 'SELECT COUNT(*) as count FROM ' . $this->table;
-        $req = $this->db->prepare($this->req);
-        $req->execute($this->array);
-        $ret = $req->fetch(PDO::FETCH_ASSOC);
-        return $ret['count'];
-        //return $this->debug()->get();
+        if ($this->req == '') {
+            $this->req = 'SELECT COUNT(*) as count FROM ' . $this->table;
+        }
+        if ($option == false) {
+            $req = $this->db->prepare($this->req);
+            $req->execute($this->array);
+            $ret = $req->fetch(PDO::FETCH_ASSOC);
+            $this->req = "";
+            $this->array = array();
+            return $ret['count'];
+        }
+        return $this;
     }
 
     public function debug()

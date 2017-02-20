@@ -10,7 +10,7 @@ class Pictures extends Model
 {
 
     protected $table = 'pictures';
-    protected $champs = array('src', 'vote', 'del', 'time', 'users_id');
+    protected $champs = array('id_pictures', 'src', 'vote', 'del', 'time', 'users_id', 'type');
     protected $data;
 
     public function users($option = false)
@@ -54,6 +54,7 @@ class Pictures extends Model
             $i++;
         }
         imagepng($destination, 'src/imgsave/' . $this->src . '.png');
+        $this->type = 'png';
     }
 
     public function redimensionner($src, $imgTmp, $lar, $hau)
@@ -69,7 +70,6 @@ class Pictures extends Model
 
     public function savePicture()
     {
-        $this->time = time();
         $save = $this->save();
         return $save;
     }

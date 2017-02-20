@@ -11,18 +11,29 @@
         </form>
     </div>
     <div id="showCom">
-        <?php
-            foreach ($commentaires as $key => $value) {
-                $toto =  $value->users();
-                if ($toto) {
-                    echo $toto->pseudo . ' => ' .$value->commentaires . ' => '. $value->users_id.' => '.$value->pictures_id.' => '.$value->id_commentaires.'<br/>';
-                }
-            }
-        ?>
+<?php
+foreach ($commentaires as $key => $value) {
+    $user = $value->users();
+    if ($user) {
+?>
+        <div class="com">
+            <p class="titre-com">
+                Commentaire de <span class="pseudo-com"><?php echo $user->pseudo; ?></span> - <span class="date-com">Le : <?php echo strftime('%d-%m-%Y à %H:%M', strtotime($value->time)); ?></span>
+            </p>
+            <p class="body-com"><?php echo nl2br($value->commentaires); ?></p>
+        </div>
+<?php
+    }
+}
+?>
     </div>
 </div>
-
 <script>
+function nl2br (str, is_xhtml) {
+    var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+}
+
 function submitForm() {
     xhr = new XMLHttpRequest();
         xhr.open('POST', '/commentaires', true);
@@ -31,7 +42,16 @@ function submitForm() {
         xhr.onload = function () {
             if (xhr.status === 200) {
                     var myArr = JSON.parse(this.responseText);
-                    //console.log(myArr);
+                    if(!myArr.error) {
+                        var newComm = document.createElement('span');
+                        var showCom = document.getElementById('showCom');
+
+                        showCom.insertBefore(newComm, showCom.childNodes[0]);
+                        newComm.innerHTML = '<div><p class="titre-com">Commentaire de <span class="pseudo-com">' + myArr.user + '</span> - Maintenant </p><p class="body-com">' + nl2br(myArr.com.commentaires) + '</p></div>';
+                    }
+                    else {
+
+                    }
             }
         };
         xhr.send(donnee);

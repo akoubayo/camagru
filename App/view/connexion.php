@@ -1,4 +1,5 @@
 <div id="pannelConnexion">
+<!-- Pannel de connexion -->
     <form id="formConnexion" method="post" action="/connexion">
         <h1 style="text-align: center">Se connecter à Camagru</h1>
         <label>
@@ -12,6 +13,7 @@
         <input type="submit" name="connexion" value="Se connecter">
         <span id="right"><a href="#" onclick="inscription()">S'inscrire</a> | <a href="#" onclick="forgot()">Mot de passe oublié</a></span>
     </form>
+    <!-- Mot de passe oublié -->
     <form id="formForgot" action="/connexion/forgot" method="post" style="display: none">
         <h1 style="text-align: center">Mot de passe oublié</h1>
         <label>
@@ -21,6 +23,7 @@
         <input type="submit" name="connexion" value="Se connecter">
         <span id="right"><a href="#" onclick="inscription()">S'inscrire</a> | <a href="#" onclick="connexion()">Se connecter</a></span>
     </form>
+    <!-- Formulaire d'inscription-->
     <form id="formInsc" action="/connexion/inscription" method="post" style="display: none">
         <h1 style="text-align: center">S'inscrire</h1>
         <label>

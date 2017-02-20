@@ -14,6 +14,7 @@ class Route
     private $_methode;
     private $_uri;
     private $_param = array();
+    private $_find_route = false;
 
     public function __construct()
     {
@@ -33,8 +34,6 @@ class Route
                 return $next($this);
             }
         }
-        $this->request_uri = $redirect;
-        $this->get($redirect, $function_call);
     }
 
     private function getParam($uri)
@@ -86,32 +85,50 @@ class Route
     }
     public function get($uri, $call_function)
     {
-        if ($this->request_method == 'GET' && $this->checkRoute($uri)) {
-            if ($this->request_uri == '/') {
-                $call = explode('@', $call_function);
-                $controller = new \App\Controller\PictureController();
-                $func = $call[1];
-                call_user_func_array(array($controller, $func), $this->_param);
-            } else {
-                $call = explode('@', $call_function);
-                $call[0] = '\App\Controller\\'.$call[0];
-                $controller = new $call[0]();
-                $call = $call[1];
-                $this->getParam($uri);
-                call_user_func_array(array($controller, $call), $this->_param);
-            }
+        if ($this->_find_route == false && $this->request_method == 'GET' && $this->checkRoute($uri)) {
+            $call = explode('@', $call_function);
+            $call[0] = '\App\Controller\\'.$call[0];
+            $controller = new $call[0]();
+            $call = $call[1];
+            $this->getParam($uri);
+            call_user_func_array(array($controller, $call), $this->_param);
+            $this->_find_route = true;
         }
         return;
     }
 
     public function post($uri, $call_function)
     {
-        if ($this->request_method == 'POST' && $this->checkRoute($uri)) {
+        if ($this->_find_route == false && $this->request_method == 'POST' && $this->checkRoute($uri)) {
             $call = explode('@', $call_function);
             $call[0] = '\App\Controller\\'.$call[0];
             $controller = new $call[0]();
             $call = $call[1];
             $controller->$call(new Request);
+            $this->_find_route = true;
         }
+    }
+
+    public function delete($uri, $call_function)
+    {
+        if ($this->_find_route == false && $this->request_method == 'DELETE' && $this->checkRoute($uri)) {
+            $call = explode('@', $call_function);
+            $call[0] = '\App\Controller\\'.$call[0];
+            $controller = new $call[0]();
+            $call = $call[1];
+            $this->getParam($uri);
+            call_user_func_array(array($controller, $call), $this->_param);
+            $this->_find_route = true;
+        }
+    }
+
+    public function defaultRoute($uri, $call_function)
+    {
+        if ($this->_find_route == false) {
+            $this->request_uri = $uri;
+            //$this->request_method = 'GET';
+            $this->get($uri, $call_function);
+        }
+        $this->_find_route = true;
     }
 }

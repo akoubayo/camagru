@@ -9,7 +9,6 @@ $app = require_once('vendor/Autoloader/Autoloader.php');
 
 use App\Route\Route;
 $app = new Route();
-
 /**
  * Les Routes pour les photos
  */
@@ -17,6 +16,7 @@ $app->auth(function($app){
     $app->get("/", "PictureController@index");
     $app->get("/takePicture", "PictureController@index");
     $app->post('/takePicture', "PictureController@takePicture");
+    $app->delete('/takePicture/{id}', "PictureController@delete");
     $app->get("/showPictures", "PictureController@showAll");
     $app->get("/galerie", "PictureController@galerie");
     $app->get("/galerie/{id}", "PictureController@picture");
@@ -30,5 +30,7 @@ $app->auth(function($app){
 $app->get('/connexion', "ConnexionController@index");
 $app->post('/connexion', "ConnexionController@connexion");
 $app->post('/connexion/inscription', "ConnexionController@inscription");
-
+$app->post('/connexion/forgot', 'ConnexionController@forgot');
+$app->get('/deconnexion', 'ConnexionController@deco');
+$app->defaultRoute("/", "ConnexionController@index");
 ?>

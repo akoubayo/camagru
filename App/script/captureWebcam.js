@@ -1,3 +1,22 @@
+function trash(id)
+{
+    xhr = new XMLHttpRequest();
+        xhr.open('DELETE', '/takePicture/' + id, true);
+
+        xhr.onload = function () {
+        if (xhr.status === 200) {
+                var trash = document.getElementById(id);
+                var next = trash.nextSibling;
+                next.parentNode.removeChild(next);
+                trash.parentNode.removeChild(trash);
+
+            } else {
+
+            }
+        };
+    xhr.send();
+}
+
 (function() {
     var streaming = false,
     video        = document.querySelector('#video'),
@@ -133,7 +152,6 @@
             donnee += "&src" + i + "=" + src + "&width" + i + "=" + widthSup + "&height" + i + "=" + heightSup + "&dataX" + i + "=" + dataXSup + "&dataY" + i + "=" + dataYSup;
         }
         donnee += "&token=" + token;
-        console.log(donnee);
         xhr = new XMLHttpRequest();
         xhr.open('POST', '/takePicture', true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
@@ -148,12 +166,25 @@
         xhr.send(donnee);
     }
 
+
+
     function addImg(src, id) {
         var newLink = document.createElement('img');
         var myPicture = document.getElementById('myPictures');
+        var newTrash = document.createElement('img');
+        var newClass = document.createAttribute("class");
+        var newClass1 = document.createAttribute("class");
+        newClass.value = 'myPicture';
+        newClass1.value = 'trash';
         newLink.id = id;
         newLink.src = src;
-        myPicture.insertBefore(newLink, myPicture.childNodes[2]);
+        newLink.setAttributeNode(newClass);
+        newTrash.id = id;
+        newTrash.src = "/src/img/poubelle.png";
+        newTrash.addEventListener('click',function(){trash(id)},false);
+        newTrash.setAttributeNode(newClass1);
+        myPicture.insertBefore(newTrash, myPicture.childNodes[2]);
+        myPicture.insertBefore(newLink, myPicture.childNodes[3]);
     }
 
     startbutton.addEventListener('click', function(ev){

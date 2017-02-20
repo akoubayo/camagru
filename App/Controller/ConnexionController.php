@@ -40,5 +40,16 @@ class ConnexionController extends Controller
             header('location:/connexion?non=non');
         }
     }
+
+    public function deco()
+    {
+        session_destroy();
+        header('location:/');
+    }
+
+    public function forgot()
+    {
+        return $this->view('view/connexion.php');
+    }
 }
 ?>

@@ -11,6 +11,7 @@
         <ul>
             <li><a href="/takePicture">Prendre une photo</a></li>
             <li><a href="/galerie">Galerie des images</a></li>
+            <li><a href="/deconnexion">Déconnexion</a></li>
         </ul>
 
     </div>

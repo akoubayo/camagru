@@ -61,8 +61,8 @@ body{
 #footer{
     clear: both;
     background-color: #5b5252;
-    width: 100%
-    margin:0;
+    width: 100%;
+    margin:0px;
 }
 
 #body{
@@ -93,11 +93,24 @@ body{
     border-left: 2px solid rgba(200, 200,200,0.9);
 }
 
-#myPictures img{
+#myPictures .myPicture {
     display: block;
     width: 80%;
     margin: 8px auto 8px auto;
 }
+
+#myPictures .trash {
+    background-color: rgba(255, 30, 30, 1.9);
+    width:9%;
+    padding:5px;
+    border-radius: 100%;
+    border: 1px solid black;
+    position: relative;
+    left: 80%;
+    top:30px;
+    cursor: pointer;
+}
+
 #pannelConnexion{
     width: 50%;
     margin-left:30%;
@@ -108,18 +121,18 @@ body{
     clear: both;
 }
 
-#formConnexion{
+#pannelConnexion form{
     padding: 15px;
 }
 
-#formConnexion label{
+#pannelConnexion form label{
     display: block;
     width: 70%;
     margin:10px auto 10px auto;
     text-decoration: underline;
     font-weight: bold;
 }
-#formConnexion input[type="text"],input[type="password"],input[type="email"]{
+#pannelConnexion form input[type="text"],input[type="password"],input[type="email"]{
     width: 70%;
     height: 30px;
     margin:10px auto 10px auto;
@@ -128,11 +141,11 @@ body{
     display: block;
 }
 
-#formConnexion input[type="submit"]{
+#pannelConnexion form input[type="submit"]{
     margin:10px auto 10px auto;
     display: block;
     width: 20%;
-    font-size: 30px;
+    font-size: 15px;
 }
 
 #right {
@@ -185,6 +198,39 @@ body{
 #corpPagination{
     margin: 0 10px 0 10px
 }
+
+#formCom textarea {
+    width: 60%;
+    height: 120px;
+    display: block;
+    margin: 10px 0 0 0;
+}
+#formCom input[type="submit"] {
+    display: block;
+    margin: 10px 0 10px 0;
+}
+
+.com {
+    width: calc(60% - 11px);
+    padding: 1px 10px 10px 10px;
+    margin: 5px 0 5px 0;
+    background-color: rgba(200, 200, 200, 0.2);
+}
+
+.pseudo-com {
+    font-weight: bolder;
+    margin-right: 10px;
+    color:rgba(50, 50, 255, 0.8);
+}
+
+.date-com {
+    font-style: italic;
+    margin-left: 10px;
+}
+
+.body-com {
+
+}
 /*@media screen and (max-width: 640px) {
     #pannelConnexion{
         width: calc(100% - 30px);
@@ -204,5 +250,5 @@ body{
         display: block;
         width: 50%;
         font-size: 30px;
-    }*/
-}
+    }
+}*/

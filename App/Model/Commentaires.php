@@ -21,7 +21,9 @@ class Commentaires extends Model
         $this->commentaires = trim($req->input('commentaire'));
         $this->pictures_id = $req->input('id_picture');
         $this->users_id = $user->id_users;
-        $this->time = time();
-        return $newCome = $this->save();
+        $newCome = $this->save();
+        $user = $newCome->users()->pseudo;
+        $ret = array('com' => $newCome, 'user' => $user);
+        return $ret;
     }
 }
