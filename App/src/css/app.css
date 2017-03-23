@@ -72,15 +72,19 @@ body{
     padding-left: 30px;
 }
 .draggableBox {
-    position: absolute;
+vertical-align: top;
+    position: inline;
     width: 70px;
     cursor: move;
 }
 
 #gal{
-    height: 110px;
+    padding-left: 40px;
+    padding-right: 40px;
+    height: 150px;
     width: 90%;
-    border: 1px solid rgba(120, 120, 120, 0.4)
+    border: 1px solid rgba(120, 120, 120, 0.4);
+    overflow:scroll;
 }
 
 #myPictures{
@@ -231,19 +235,97 @@ body{
 .body-com {
 
 }
-/*@media screen and (max-width: 640px) {
+
+#likePng {
+    position: relative;
+    top:5px;
+    left: 10px;
+    width: 25px;
+    cursor: pointer;
+}
+
+#errorLike {
+    color:red;
+    margin-left: 20px;
+    display:none;
+}
+
+@media screen and (max-width: 1024px) {
     #pannelConnexion{
         width: calc(100% - 30px);
         margin-left: 0;
         margin-right: 0;
     }
+    #menu{
+        float: none;
+        width: 100%;
+        height: 80px;
+        background-color: #272930;
+        border-top: 1px solid rgba(255,255,255,0.4)
+    }
+    #menu h3 {
+        font-size: 14px;
+        margin: 0px;
+        padding:0px;
+    }
+    #menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 2px;
+    }
+    #menu li {
+        color: white;
+        margin: 3px 5px 3px 5px;
+        cursor: pointer;
+        float: left;
+    }
 
+    #menu li a {
+        text-decoration: none;
+        color: white;
+    }
     #body{
         float: left;
-        width:99%;
+        width:calc(78% - 30px);
         min-height: calc(90% - 18px);
+        padding-left: 30px;
+    }
+    #myPictures{
+        clear: both;
+        float: none;
+        width:calc(88% - 30px);
+        min-height: 170px !important;
+        max-height: 80px !important;
+        overflow: none;
+        border-left: none;
+        border-bottom: 2px solid rgba(200, 200,200,0.9);
+        margin-bottom: 50px;
+    }
+    #myPictures h1 {
+        font-size: 16px;
+        margin: 0;
+    }
+    #myPictures .myPicture {
+        display: inline;
+        width: calc(25% - 24px);
+        margin: 8px 8px 8px 8px;
+    }
+    #myPictures .trash {
+        background-color: rgba(255, 30, 30, 1.9);
+        width:2%;
         padding:0px;
-
+        border-radius: 100%;
+        border: 1px solid black;
+        position: relative;
+        left: 20%;
+        top:-35px;
+        cursor: pointer;
+    }
+    #pannelConnexion form input[type="submit"]{
+    margin:10px auto 10px auto;
+    display: block;
+    width: 50%;
+    font-size: 15px;
     }
     form input[type="submit"]{
         margin:10px auto 10px auto;
@@ -251,4 +333,4 @@ body{
         width: 50%;
         font-size: 30px;
     }
-}*/
+}

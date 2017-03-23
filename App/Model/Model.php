@@ -22,7 +22,7 @@ class Model
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             $this->db->exec("SET CHARACTER SET utf8");
         } catch (Exception $e) {
-                die('Erreur : '.$e->getMessage());
+               die('Erreur : '.$e->getMessage());
         }
     }
     public function all($order = "desc", $limit = "", $offset = "")

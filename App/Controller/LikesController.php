@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use App\Model\Commentaires;
+use App\Model\Likes;
 use App\vendor\Request\Request;
 use App\Model\Users;
 use App\Model\Pictures;
@@ -9,7 +9,7 @@ use App\Model\Pictures;
 /**
 *
 */
-class CommentairesController extends Controller
+class LikesController extends Controller
 {
     public $me;
 
@@ -29,17 +29,10 @@ class CommentairesController extends Controller
         }
     }
 
-    public function create(Request $req)
+    public function addLikes(Request $req)
     {
-        $com = trim($req->input('commentaire'));
-        $picture = new Pictures;
-        $picture = $picture->find((int)$req->input('id_picture'));
-        if (!empty($com) && count($picture) == 1) {
-            $commentaire = new Commentaires();
-            $newCome = $commentaire->create($req, $this->me, $picture);
-            echo json_encode($newCome);
-        } else {
-            echo json_encode(["error" => "Nous avons rencontré une erreur"]);
-        }
+        $like = new Likes();
+        $ret = $like->addLikes($this->me, $req);
+        echo json_encode($ret);
     }
 }

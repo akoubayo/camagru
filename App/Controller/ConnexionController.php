@@ -17,11 +17,7 @@ class ConnexionController extends Controller
     public function connexion(Request $req)
     {
         $user = new Users();
-        if ($use = $user->identValid($req)) {
-            $use[0]->token = $use[0]->encryptPass(time().rand(0,10000).$use[0]->pseudo.$use[0]->mail.time());
-            $use[0]->expire + (7 * 24 * 60 * 60);
-            $use[0]->update();
-            $_SESSION['token'] = $use[0]->token;
+        if ($user->identValid($req) == true) {
             header('location:/');
             return;
         }
@@ -32,7 +28,7 @@ class ConnexionController extends Controller
     public function inscription(Request $req)
     {
         $user = new Users();
-        if ($user->validPseudo($req) && $user->validMail($req) && $user->validPassword($req)) {
+        if ($user->validPseudo($req) && $user->validPassword($req)) {
             $user = new Users();
             $user->saveUser($req);
             header('location:/connexion?valide=true');
@@ -47,9 +43,45 @@ class ConnexionController extends Controller
         header('location:/');
     }
 
-    public function forgot()
+    public function forgot(Request $req)
     {
+        $use = new Users();
+        $use->resetPassword($req);
         return $this->view('view/connexion.php');
     }
+
+    public function confirme($id, $hash)
+    {
+        $user = new Users();
+        if ($user->confirme($id, $hash)) {
+            header('location:/');
+            return;
+        } else {
+            header('location:/connexion?error=connexion');
+            return;
+        }
+    }
+
+    public function changePass($id, $hash)
+    {
+        $user = new Users();
+        if ($user->changePass($id, $hash)) {
+            return $this->view('view/changePass.php', ['id' => $id, 'hash' => $hash]);
+        } else {
+            header('location:/connexion?error=connexion');
+            return;
+        }
+    }
+
+    public function resetPassword(Request $req)
+    {
+        $user = new Users();
+        if ($user->newPassword($req)) {
+            header('location:/connexion');
+            return;
+        } else {
+            header('location:/connexion?error=connexion');
+            return;
+        }
+    }
 }
-?>

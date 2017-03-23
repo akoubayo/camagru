@@ -44,12 +44,21 @@ class PictureController extends Controller
         if ($req->input('donnee')) {
             $pict = new Pictures();
             $pict->users_id = (int)$this->me->id_users;
-            $pict->makePicture($req);
-            echo json_encode(array('src'=>'src/imgsave/'.$pict->src.'.'.$pict->type, 'id' => $pict->id_pictures));
-        } else {
-            http_response_code(400);
-            echo json_encode(["error" => "Donnée incorrect"]);
+            $type = $req->input("type");
+            if ($type == 'gifTmp') {
+                $pict->srcFolder = 'src/imgtmp/';
+                $pict->save = false;
+                $pict->id_pictures = null;
+            } elseif ($type == 'gif'){
+                $pict->createGif = true;
+            }
+            if ($pict->makePicture($req)) {
+                echo json_encode(array('src'=>$pict->srcFolder.$pict->src.'.'.$pict->type, 'id' => $pict->id_pictures));
+                return;
+            }
         }
+        echo json_encode(["error" => "Donnée incorrect"]);
+        return;
     }
 
     public function galerie()
@@ -98,7 +107,7 @@ class PictureController extends Controller
     public function delete($id)
     {
         $picture = $this->me->pictures(true)->where([['id_pictures', '=', $id]])->get();
-        if(count($picture) == 1) {
+        if (count($picture) == 1) {
             $picture[0]->del = true;
             $picture[0]->update();
             echo json_encode($picture[0]);

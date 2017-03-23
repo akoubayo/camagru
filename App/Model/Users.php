@@ -2,13 +2,15 @@
 namespace App\Model;
 
 use App\vendor\Request\Request;
+use App\Lib\Mail;
+
 /**
 *
 */
 class Users extends Model
 {
     protected $table = 'users';
-    protected $champs = array('pseudo', 'password', 'mail', 'valide', 'token', 'expire');
+    protected $champs = array('id_users','pseudo', 'password', 'mail', 'valide', 'token', 'expire');
 
     public function pictures($option = false)
     {
@@ -21,6 +23,12 @@ class Users extends Model
         $this->mail = $req->input('mail');
         $this->password = $this->encryptPass($req->input('pass'));
         $this->save();
+        $to        = $this->mail;
+        $object    = 'Confirmez votre inscription sur Camagru';
+        $message   = 'Pour confirmez votre inscription merci de clicker sur le lien suivant :<br/>
+                     <a href="http://'.$_SERVER['HTTP_HOST'].'/confirme/'.$this->id_users.'/'.$this->encryptPass($this->pseudo.$this->password).'">Confirmer votre adresse mail</a>';
+        $mail = new Mail($to, $object, $message);
+        $mail->send();
     }
 
     public function validPseudo(Request $req)
@@ -53,7 +61,21 @@ class Users extends Model
             ->whereOr([['mail', '=', $req->input('pseudo')]])
             ->where([['password', '=', $this->encryptPass($req->input('pass'))]])
             ->get();
-        return $user;
+        if ($user) {
+            $this->createToken($user[0]);
+            return true;
+        }
+        return false;
+    }
+
+    private function createToken(Users $user, $session = true)
+    {
+        $user->token = $user->encryptPass(time().rand(0, 10000).$user->pseudo.$user->mail.time());
+        $user->expire + (7 * 24 * 60 * 60);
+        $user->update();
+        if ($session == true) {
+            $_SESSION['token'] = $user->token;
+        }
     }
 
     public function encryptPass($donnees)
@@ -68,4 +90,57 @@ class Users extends Model
         return $donnees;
     }
 
+    public function confirme($id, $hash)
+    {
+        $user = $this->where([['id_users', '=', $id]])->get();
+        if ($user) {
+            $h = $this->encryptPass($user[0]->pseudo.$user[0]->password);
+            if ($h == $hash) {
+                $user[0]->valide = 1;
+                $user[0]->update();
+                $this->createToken($user[0]);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function resetPassword($req)
+    {
+        if ($use = $this->where([['mail', '=', $req->input('email')]])->get()) {
+            $use = $use[0];
+            $use->createToken($use, false);
+            $to        = $use->mail;
+            $object    = 'Vous avez demandez à changer de mot de passe';
+            $message   = 'Pour changer votre mot de passe merci de clicker sur le lien suivant :<br/>
+                          <a href="http://'.$_SERVER['HTTP_HOST'].'/changepass/'.$use->id_users.'/'.$this->encryptPass($use->pseudo.$use->password.$use->token).'">Changer de mot de passe</a>';
+            $mail = new Mail($to, $object, $message);
+            $mail->send();
+        }
+    }
+
+    public function changePass($id, $hash)
+    {
+        $user = $this->where([['id_users', '=', $id]])->get();
+        if ($user) {
+            $h = $this->encryptPass($user[0]->pseudo.$user[0]->password.$user[0]->token);
+            if ($h == $hash) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public function newPassword(Request $req)
+    {
+        $user = $this->where([['id_users', '=', $req->input('id')]])->get();
+        if ($user) {
+            $h = $this->encryptPass($user[0]->pseudo.$user[0]->password.$user[0]->token);
+            if ($h == $req->input('hash') && $this->validPassword($req)) {
+                $user[0]->password = $user[0]->encryptPass($req->input('pass'));
+                $user[0]->update();
+                return true;
+            }
+        }
+        return false;
+    }
 }

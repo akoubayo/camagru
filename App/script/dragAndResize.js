@@ -7,26 +7,24 @@ function hasClass(element, className) {
     var onUse = false;
     var posLeft = document.querySelector('#gal');
     function init() { // La fonction d'initialisation
-        if(posLeft)
-            posLeft = posLeft.offsetLeft + 30;
+
         var elements = document.getElementsByTagName('img'),
             elementsLength = elements.length;
 
         for (var i = 0 ; i < elementsLength ; i++) {
             if (elements[i].className === 'draggableBox') {
-                elements[i].style.top = document.querySelector('#gal').offsetTop + 10 + 'px';
-                elements[i].style.left = posLeft + 'px';
                 if(parseInt(elements[i].height) > parseInt(document.querySelector('#gal').style.height))
                     elements[i].style.height =parseInt(document.querySelector('#gal').style.height) - 10 + 'px';
-                posLeft += 120;
+                posLeft += 70;
                 elements[i].addEventListener('mousedown', function(e) { // Initialise le drag & drop
                     var s = storage;
-                    s.target = e.target;
-                    s.target.style.width = s.target.width + 'px';
-                    s.target.style.height = s.target.height + 'px';
-                    s.offsetX = e.clientX - s.target.offsetLeft;
-                    s.offsetY = e.clientY - s.target.offsetTop;
-                    s.target.style.width =  s.target.width + 'px';
+                    s.target                 = e.target;
+                    s.target.style.position  = 'absolute';
+                    s.target.style.width     =  s.target.width + 'px';
+                    s.target.style.height    = s.target.height + 'px';
+                    s.offsetX                = e.clientX - s.target.offsetLeft;
+                    s.offsetY                = e.clientY - s.target.offsetTop;
+                    s.target.style.width     =  s.target.width + 'px';
                     // For risize img
                     startX = e.clientX;
                     startY = e.clientY;
@@ -54,6 +52,9 @@ function hasClass(element, className) {
         document.addEventListener('mousemove', function(e) { // Permet le suivi du drag & drop
             var target = storage.target;
             var video = document.querySelector('#video');
+            if (video && video.style.display == 'none'){
+                video = document.querySelector('#canvas');
+            }
             if (target) {
                 if (storage.offsetY <= 20 && storage.offsetX >= 0 && storage.offsetX <= 20 || onUse=='topL') {
                     target.style.width = (startWidth - e.clientX + startX) + 'px';

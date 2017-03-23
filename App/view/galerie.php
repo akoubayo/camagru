@@ -27,22 +27,24 @@
 
         this.next = function()
         {
-            if(this.page < this.totalPage)
-            {
+            if(this.page < this.totalPage) {
                 document.querySelector('#page').value = ++this.page;
-                this.offset = this.limit * ( this.page - 1);
-                getImage();
+            } else {
+                document.querySelector('#page').value = this.page = 1;
             }
+            this.offset = this.limit * ( this.page - 1);
+            getImage();
         }
 
         this.prev = function()
         {
-            if(this.page > 1)
-            {
-                 document.querySelector('#page').value = --this.page;
-                 this.offset = this.limit * ( this.page - 1);
-                 getImage();
+            if(this.page > 1) {
+                document.querySelector('#page').value = --this.page;
+            } else {
+                document.querySelector('#page').value = this.page = this.totalPage;
             }
+            this.offset = this.limit * ( this.page - 1);
+            getImage();
         }
     }
     var pageFct = new pagination();
@@ -114,7 +116,7 @@
                 var myArr = JSON.parse(this.responseText);
                 galerie.innerHTML = '';
                 for (var i = 0 ; i < myArr.pictures.length ; i++) {
-                    galerie.append(addImg('/src/imgsave/' + myArr.pictures[i].src + '.png',myArr.pictures[i].id_pictures))
+                    galerie.append(addImg('/src/imgsave/' + myArr.pictures[i].src + '.' + myArr.pictures[i].type,myArr.pictures[i].id_pictures))
                 }
                 pageFct.pagination(myArr.count);
             } else {
