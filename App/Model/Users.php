@@ -57,7 +57,7 @@ class Users extends Model
 
     public function identValid(Request $req)
     {
-        $user = $this->where([['pseudo', "=", $req->input('pseudo')],['password', '=', $this->encryptPass($req->input('pass'))]])
+        $user = $this->where([['pseudo', "=", $req->input('pseudo')],['password', '=', $this->encryptPass($req->input('pass'))],['valide', '=', 1]])
             ->whereOr([['mail', '=', $req->input('pseudo')]])
             ->where([['password', '=', $this->encryptPass($req->input('pass'))]])
             ->get();

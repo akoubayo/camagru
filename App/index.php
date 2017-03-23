@@ -2,7 +2,7 @@
 namespace App;
 
 session_start();
-
+ini_set('date.timezone', "America/Sao_Paulo");
 ini_set('display_errors', 1);
 
 $app = require_once('vendor/Autoloader/Autoloader.php');

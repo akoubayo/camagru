@@ -250,6 +250,11 @@ vertical-align: top;
     display:none;
 }
 
+.error {
+        color: red;
+        display: none;
+}
+
 @media screen and (max-width: 1024px) {
     #pannelConnexion{
         width: calc(100% - 30px);

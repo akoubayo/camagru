@@ -132,7 +132,7 @@ function trash(id)
     //     xhr.send("donnee=" + data + "&token=" + token);
     // }
 
-    function createDonnee(type = 'png')
+    function createDonnee(type = 'png', init = true)
     {
         var imgSup = document.getElementsByAttribute(document.querySelectorAll('.draggableBox'),'data-x');
         var context, data, xhr, donnee;
@@ -157,15 +157,17 @@ function trash(id)
             var heightSup = imgSup[i].height
             var dataXSup = imgSup[i].getAttribute('data-x');
             var dataYSup = imgSup[i].getAttribute('data-y');
-            imgSup[i].style.position = 'static';
-            imgSup[i].style.top = imgSup[i].offsetTop + 'px';
-            imgSup[i].style.left = imgSup[i].offsetLeft + 'px';
-            imgSup[i].style.top = imgSup[i].offsetTop + 'px';
-            imgSup[i].style.left = imgSup[i].offsetLeft + 'px';
-            imgSup[i].removeAttribute('data-y');
-            imgSup[i].removeAttribute('data-x');
-            imgSup[i].style.width = "";
-            imgSup[i].style.height = "";
+            if (init === true) { // On remet les imgs a leur place
+                imgSup[i].style.position = 'static';
+                imgSup[i].style.top = imgSup[i].offsetTop + 'px';
+                imgSup[i].style.left = imgSup[i].offsetLeft + 'px';
+                imgSup[i].style.top = imgSup[i].offsetTop + 'px';
+                imgSup[i].style.left = imgSup[i].offsetLeft + 'px';
+                imgSup[i].removeAttribute('data-y');
+                imgSup[i].removeAttribute('data-x');
+                imgSup[i].style.width = "";
+                imgSup[i].style.height = "";
+            }
             donnee += "&src" + i + "=" + src + "&width" + i + "=" + widthSup + "&height" + i + "=" + heightSup + "&dataX" + i + "=" + dataXSup + "&dataY" + i + "=" + dataYSup;
         }
         donnee += "&token=" + token;
@@ -197,7 +199,11 @@ function trash(id)
     var frame = [];
     function takeGif(url)
     {
-        var donnee = createDonnee('gif');
+        var init = false;
+        if (frame.length >= 10) {
+            init = true;
+        }
+        var donnee = createDonnee('gif', init);
         if(frame.length < 10) {
             donnee += '&type=gifTmp';
             xhr = new XMLHttpRequest();

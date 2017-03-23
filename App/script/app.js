@@ -15,5 +15,7 @@ function inscription() {
 };
 
 window.onload = function(){
+	if (location.search.substring(1) === "error") {
+		document.querySelector('.error').style.display = 'inline';
+	}
 }
-

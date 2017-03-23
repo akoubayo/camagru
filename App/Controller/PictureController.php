@@ -75,11 +75,13 @@ class PictureController extends Controller
         $req = new Request;
         $pict = array('limit' => (int)$req->input('limit'), 'offset' => (int)$req->input('offset'));
         $picturesQuery = new Pictures();
-        $pictures = $picturesQuery->where([['del', '=', 0]])
+        $pictures = $picturesQuery
+            ->where([['del', '=', '0']])
             ->order([['id_pictures', 'DESC']])
             ->limit($req->input('limit'))
             ->offset((int)$req->input('offset'))
             ->get();
+
         $pict['pictures'] = $pictures;
         $pict['count'] = $picturesQuery->count(true)
             ->where([['del', '=', '0']])

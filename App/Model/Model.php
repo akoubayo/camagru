@@ -17,8 +17,8 @@ class Model
     public function __construct()
     {
         try {
-            require(__DIR__.'/../config/setup.php');
-            $this->db = new PDO($DB_DSN.';dbname=camagru;charset=utf8', $DB_USER, $DB_PASSWORD);
+            require(__DIR__.'/../config/database.php');
+            $this->db = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             $this->db->exec("SET CHARACTER SET utf8");
         } catch (Exception $e) {
@@ -69,7 +69,7 @@ class Model
         $val = 'VALUES(';
         $array = array();
         foreach ($this->champs as $value) {
-            if (isset($this->$value) && !empty($this->$value)) {
+            if (isset($this->$value)) {
                 $req .= $value . ', ';
                 $val .= ':' . $value . ', ';
                 $array[$value] = $this->$value;

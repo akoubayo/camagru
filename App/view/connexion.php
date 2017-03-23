@@ -11,6 +11,7 @@
         </label>
         <input type="password" name="pass" placeholder="************">
         <input type="submit" name="connexion" value="Se connecter">
+        <span class="error"> * Une erreur s'est produite.</span>
         <span id="right"><a href="#" onclick="inscription()">S'inscrire</a> | <a href="#" onclick="forgot()">Mot de passe oublié</a></span>
     </form>
     <!-- Mot de passe oublié -->
@@ -21,6 +22,7 @@
         </label>
         <input type="email" name="email" placeholder="Entrez votre adresse mail">
         <input type="submit" name="connexion" value="Se connecter">
+        <span class="error">* Une erreur s'est produite.</span>
         <span id="right"><a href="#" onclick="inscription()">S'inscrire</a> | <a href="#" onclick="connexion()">Se connecter</a></span>
     </form>
     <!-- Formulaire d'inscription-->

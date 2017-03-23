@@ -21,7 +21,7 @@ class ConnexionController extends Controller
             header('location:/');
             return;
         }
-        header('location:/connexion?error=connexion');
+        header('location:/connexion?error');
         return;
     }
 
@@ -33,7 +33,7 @@ class ConnexionController extends Controller
             $user->saveUser($req);
             header('location:/connexion?valide=true');
         } else {
-            header('location:/connexion?non=non');
+            header('location:/connexion?error');
         }
     }
 
@@ -57,7 +57,7 @@ class ConnexionController extends Controller
             header('location:/');
             return;
         } else {
-            header('location:/connexion?error=connexion');
+            header('location:/connexion?error');
             return;
         }
     }
@@ -68,7 +68,7 @@ class ConnexionController extends Controller
         if ($user->changePass($id, $hash)) {
             return $this->view('view/changePass.php', ['id' => $id, 'hash' => $hash]);
         } else {
-            header('location:/connexion?error=connexion');
+            header('location:/connexion?error');
             return;
         }
     }
@@ -80,7 +80,7 @@ class ConnexionController extends Controller
             header('location:/connexion');
             return;
         } else {
-            header('location:/connexion?error=connexion');
+            header('location:/connexion?error');
             return;
         }
     }

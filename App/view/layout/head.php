@@ -26,28 +26,6 @@
     </div>
     <?php include_once('foot.php'); ?>
 <script>
-console.log(navigator);
-if(navigator.geolocation)
-{
-    console.log(navigator.geolocation);
-    navigator.geolocation.getCurrentPosition(showLocation, errorHandler);
-}
-else
-{
-    alert('Votre navigateur ne prend malheureusement pas en charge la géolocalisation.');
-}
-function showLocation(position)
-{
-    console.log(position);
-}
-function errorHandler(error)
-{
-    // On log l'erreur sans l'afficher, permet simplement de débugger.
-    console.log('Geolocation error : code '+ error.code +' - '+ error.message);
-
-    // Affichage d'un message d'erreur plus "user friendly" pour l'utilisateur.
-    alert('Une erreur est survenue durant la géolocalisation. Veuillez réessayer plus tard ou contacter le support.');
-}
 var token = '';
 </script>
 <script type="text/javascript" src="/../../script/app.js"></script>

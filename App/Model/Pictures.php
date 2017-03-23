@@ -111,7 +111,8 @@ class Pictures extends Model
     }
 
     public function savePicture()
-    {
+    {   
+        $this->del = 0;
         $save = $this->save();
         return $save;
     }
